@@ -55,7 +55,7 @@ jobs:
 
       - name: Update GitOps repo with new image tag
         run: |
-          git clone https://github.com/rasika-08061998/eks-gitops-deployments.git
+          git clone https://${{ secrets.GITOPS_TOKEN }}@github.com/rasika-08061998/eks-gitops-deployments.git
           cd eks-gitops-deployments/backend
 
           sed -i "s|image: .*|image: 528757804354.dkr.ecr.ap-south-1.amazonaws.com/python-microservice-app:${IMAGE_TAG}|g" deployment.yaml
@@ -66,6 +66,7 @@ jobs:
           git add deployment.yaml
           git commit -m "Update backend image to ${IMAGE_TAG}"
           git push
+         
 
       # -------- FRONTEND IMAGE --------
       - name: Build Frontend Image
