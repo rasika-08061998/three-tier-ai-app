@@ -13,6 +13,7 @@ env:
   AWS_REGION: ap-south-1
   BACKEND_REPO: python-microservice-app
   FRONTEND_REPO: react-frontend-app
+  GITOPS_REPO: eks-gitops-deployments
 
 jobs:
 
@@ -38,7 +39,11 @@ jobs:
       - name: Set Image Tag
         run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      # -------- BACKEND IMAGE --------
+
+      ################################
+      # Build and Push Backend Image
+      ################################
+
       - name: Build Backend Image
         run: |
           docker build -t $BACKEND_REPO:$IMAGE_TAG ./backend
@@ -53,22 +58,11 @@ jobs:
           docker push \
           ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPO:$IMAGE_TAG
 
-      - name: Update GitOps repo with new image tag
-        run: |
-          git clone https://${{ secrets.GITOPS_TOKEN }}@github.com/rasika-08061998/eks-gitops-deployments.git
-          cd eks-gitops-deployments/backend
 
-          sed -i "s|image: .*|image: 528757804354.dkr.ecr.ap-south-1.amazonaws.com/python-microservice-app:${IMAGE_TAG}|g" deployment.yaml
+      ################################
+      # Build and Push Frontend Image
+      ################################
 
-          git config user.email "ci@github.com"
-          git config user.name "github-actions"
-
-          git add deployment.yaml
-          git commit -m "Update backend image to ${IMAGE_TAG}"
-          git push
-         
-
-      # -------- FRONTEND IMAGE --------
       - name: Build Frontend Image
         run: |
           docker build -t $FRONTEND_REPO:$IMAGE_TAG ./frontend
@@ -82,3 +76,27 @@ jobs:
         run: |
           docker push \
           ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_REPO:$IMAGE_TAG
+
+
+      ################################
+      # Update GitOps Repo
+      ################################
+
+      - name: Update GitOps repo with new image tag
+        env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+
+          git clone https://${{ secrets.GITOPS_TOKEN }}@github.com/rasika-08061998/$GITOPS_REPO.git
+          cd $GITOPS_REPO/backend
+
+          sed -i "s|image: .*|image: 528757804354.dkr.ecr.ap-south-1.amazonaws.com/python-microservice-app:${IMAGE_TAG}|g" deployment.yaml
+
+          git config user.email "github-actions@github.com"
+          git config user.name "github-actions"
+
+          git add deployment.yaml
+
+          git commit -m "Update backend image to ${IMAGE_TAG}" || echo "No changes to commit"
+
+          git push
