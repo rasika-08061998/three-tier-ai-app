@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to ECR
+name: Build and Push Docker Images
 
 on:
   push:
@@ -11,7 +11,8 @@ permissions:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY: python-microservice-app
+  BACKEND_REPO: python-microservice-app
+  FRONTEND_REPO: react-frontend-app
 
 jobs:
 
@@ -37,16 +38,32 @@ jobs:
       - name: Set Image Tag
         run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: Build Docker Image
+      # -------- BACKEND IMAGE --------
+      - name: Build Backend Image
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG ./backend
+          docker build -t $BACKEND_REPO:$IMAGE_TAG ./backend
 
-      - name: Tag Docker Image
+      - name: Tag Backend Image
         run: |
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG \
-          ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $BACKEND_REPO:$IMAGE_TAG \
+          ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPO:$IMAGE_TAG
 
-      - name: Push Image to ECR
+      - name: Push Backend Image
         run: |
           docker push \
-          ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
+          ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPO:$IMAGE_TAG
+
+      # -------- FRONTEND IMAGE --------
+      - name: Build Frontend Image
+        run: |
+          docker build -t $FRONTEND_REPO:$IMAGE_TAG ./frontend
+
+      - name: Tag Frontend Image
+        run: |
+          docker tag $FRONTEND_REPO:$IMAGE_TAG \
+          ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_REPO:$IMAGE_TAG
+
+      - name: Push Frontend Image
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_REPO:$IMAGE_TAG
