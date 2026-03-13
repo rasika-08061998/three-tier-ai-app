@@ -38,3 +38,7 @@ def chat(request: schemas.MessageRequest, db: Session = Depends(get_db)):
     db.commit()
 
     return {"response": ai_reply}
+
+# Enable Prometheus Metrics
+# -------------------------
+Instrumentator().instrument(app).expose(app)
