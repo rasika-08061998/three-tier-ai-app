@@ -48,5 +48,120 @@ Developer → GitHub → CI/CD Pipeline → Docker Image → AWS ECR → ArgoCD 
 
 ## 📊 Architecture Diagram:
 
+![Architecture](docs/Project_Architecture.png)
 
+
+---
+
+## ⚙️ Deployment Workflow
+
+The project follows a complete DevOps deployment lifecycle.
+
+### 1️⃣ Infrastructure Provisioning
+
+Infrastructure is created using Terraform.
+
+Commands used:
+terraform init
+terraform plan
+terraform apply
+
+
+This creates the following resources.
+
+- AWS VPC
+- Public and private subnets
+- NAT Gateway
+- AWS EKS cluster
+- Bastion host
+- Security groups
+
+---
+
+### 2️⃣ Application Containerization
+
+Application code is packaged into Docker containers.
+
+Example command:
+
+**docker build -t ai-app .**
+
+
+The container image is pushed to **AWS ECR**.
+
+---
+
+### 3️⃣ Continuous Integration
+
+GitHub Actions automatically runs when code is pushed.
+
+Pipeline tasks include:
+
+1. Build Docker image
+2. Push image to ECR
+3. Update deployment manifests
+
+---
+
+### 4️⃣ GitOps Deployment
+
+ArgoCD continuously monitors the GitOps repository.
+
+Workflow:
+
+1. Manifest change pushed to GitHub
+2. ArgoCD detects update
+3. Cluster state synchronized
+4. Application deployed automatically
+
+---
+
+### 5️⃣ Application Running on Kubernetes
+
+The application runs inside Kubernetes pods.
+
+Components include:
+
+- Frontend service
+- Backend API
+- Database layer
+
+---
+
+### 6️⃣ Monitoring and Observability
+
+Prometheus collects metrics from the Kubernetes cluster.
+
+Grafana displays dashboards including:
+
+- CPU usage
+- Memory usage
+- Pod health
+- Application performance
+
+---
+
+## 🧹 Cleanup (Stop AWS Costs)
+
+To remove infrastructure and stop AWS billing:
+
+terraform destroy
+
+
+Also verify deletion of:
+
+- EKS cluster
+- NAT Gateway
+- Load balancers
+- ECR repositories
+- EC2 instances
+
+---
+
+## 👩‍💻 Author
+
+**Rasika Deshmukh**
+
+GitHub  
+https://github.com/rasika-08061998
 
