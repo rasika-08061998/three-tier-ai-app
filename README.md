@@ -1,5 +1,6 @@
-🚀 **DevOps Platform on AWS using EKS, GitOps and CI/CD
-**
+🚀 **DevOps Platform on AWS using EKS, GitOps and CI/CD**
+
+
 A production-style DevOps platform built on AWS using Terraform, Kubernetes (EKS), GitHub Actions, Docker and GitOps with ArgoCD.
 
 This project demonstrates how modern DevOps teams build automated infrastructure and application deployment pipelines using Infrastructure as Code, CI/CD, and GitOps practices.
