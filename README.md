@@ -1,229 +1,226 @@
-Three-Tier AI Application (React + FastAPI + PostgreSQL)
-Project Overview
+🚀 **DevOps Platform on AWS using EKS, GitOps and CI/CD
+**
+A production-style DevOps platform built on AWS using Terraform, Kubernetes (EKS), GitHub Actions, Docker and GitOps with ArgoCD.
 
-This repository contains the application code for a cloud-native three-tier microservices platform deployed on Amazon EKS using GitOps and ArgoCD.
+This project demonstrates how modern DevOps teams build automated infrastructure and application deployment pipelines using Infrastructure as Code, CI/CD, and GitOps practices.
 
-The application follows a modern microservices architecture:
+📌 **Project Overview**
 
-Frontend → React.js
+The goal of this project is to simulate a real-world DevOps environment where:
 
-Backend API → Python FastAPI
+Infrastructure is provisioned using Terraform
 
-Database → PostgreSQL
+Applications are containerized using Docker
 
-The platform is designed to demonstrate production-grade DevOps practices, including:
+CI/CD pipelines are implemented with GitHub Actions
 
-Docker containerization
+Deployments are managed through GitOps with ArgoCD
 
-GitHub Actions CI pipeline
+Monitoring is enabled using Prometheus and Grafana
 
-AWS ECR image registry
+Everything runs on AWS EKS Kubernetes cluster
 
-GitOps deployments using ArgoCD
 
-Kubernetes orchestration with Amazon EKS
+🏗 **Architecture**
 
-AWS Application Load Balancer (ALB) ingress
+Architecture flow:
 
-Architecture Overview
-User
-   |
-   v
-AWS ALB (Ingress Controller)
-   |
-   +----------------+
-   |                |
-Frontend        Backend API
-React           FastAPI
-   |                |
-   +--------> PostgreSQL
-Repository Structure
-three-tier-ai-app
-│
-├── backend
-│   ├── app
-│   │   └── main.py
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── frontend
-│   ├── src
-│   ├── package.json
-│   └── Dockerfile
-│
-├── docker-compose.yml
-└── .github
-    └── workflows
-        └── ci.yaml
-Application Components
-Frontend (React)
+Developer
+     │
+     ▼
+GitHub Repository
+     │
+     ▼
+GitHub Actions CI Pipeline
+     │
+Build Docker Image
+     │
+     ▼
+Push Image to AWS ECR
+     │
+     ▼
+ArgoCD detects manifest changes
+     │
+     ▼
+Deploys application to AWS EKS
+     │
+     ▼
+Monitoring via Prometheus + Grafana
 
-The frontend is built using React.js and communicates with the backend API.
 
-Features:
+🧰 **Tech Stack**
+Category	Tools
+Cloud	AWS
+Infrastructure as Code	Terraform
+Containerization	Docker
+Orchestration	Kubernetes (EKS)
+CI/CD	GitHub Actions
+GitOps	ArgoCD
+Container Registry	AWS ECR
+Monitoring	Prometheus, Grafana
+Networking	VPC, NAT Gateway, Load Balancer
 
-User interface for AI chat interaction
+📂 **Repository Structure**
 
-API communication with backend
+This platform is organized into three repositories.
 
-Containerized using Docker
+1️⃣ Infrastructure Repository
 
-Runs on:
+eks-devops-platform-infra
 
-Port: 3000
-Backend (FastAPI)
+Contains Terraform code to provision AWS resources:
 
-The backend is a Python FastAPI microservice providing:
+1. VPC
+2. Subnets
+3. NAT Gateway
+4. EKS Cluster
+5. IAM Roles
+6. Bastion Host
+7. Security Groups
 
-REST API endpoints
+**Repository link**:
 
-Chat AI interface
+https://github.com/rasika-08061998/eks-devops-platform-infra
 
-Database interaction
 
-Example endpoints:
+2️⃣ **Application Repository**
 
-GET  /health
-POST /chat
+**three-tier-ai-app
+**
+**Contains**:
 
-Swagger UI:
+1. Python microservices
+2. Dockerfile
+3. Application source code
+4. GitHub Actions CI pipeline
 
-/docs
+**Repository link**:
 
-Runs on:
+https://github.com/rasika-08061998/three-tier-ai-app
 
-Port: 8000
-Database (PostgreSQL)
 
-PostgreSQL stores application data.
-
-In Kubernetes it is deployed using:
-
-StatefulSet
-
-PersistentVolume
-
-AWS EBS CSI driver
-
-Local Development
-Prerequisites
-
-Docker
-
-Docker Compose
-
-Node.js
-
-Python 3.10+
-
-Run locally
-docker-compose up --build
-
-Access:
-
-Frontend
-
-http://localhost:3000
-
-Backend
-
-http://localhost:8000/docs
-CI Pipeline (GitHub Actions)
-
-The CI pipeline automatically builds and pushes Docker images to Amazon ECR.
-
-Pipeline steps:
-
-1️⃣ Checkout code
-2️⃣ Configure AWS credentials via OIDC
-3️⃣ Build Docker images
-4️⃣ Push images to AWS ECR
-5️⃣ Update GitOps repository with new image tag
-
-Location:
-
-.github/workflows/ci.yaml
-Container Registry
-
-Images are stored in Amazon Elastic Container Registry (ECR).
-
-Example images:
-
-python-microservice-app
-react-frontend-app
-
-Image tags are generated using:
-
-Git commit SHA
-GitOps Deployment
-
-Application deployment is handled using ArgoCD.
-
-This repository does not contain Kubernetes manifests.
-
-Instead, deployments are managed in a separate repository:
+3️⃣ **GitOps Repository**
 
 eks-gitops-deployments
 
-The CI pipeline automatically updates image tags there.
+Contains Kubernetes manifests used by ArgoCD to deploy applications.
 
-Production Deployment
+Includes:
 
-Production deployment includes:
+1. Deployments
+2. Services
+3. ConfigMaps
+4. Ingress
+5. Monitoring configuration
 
-Amazon EKS cluster
+**Repository link**:
 
-AWS Load Balancer Controller
+https://github.com/rasika-08061998/eks-gitops-deployments
 
-ALB Ingress routing
+⚙️ **Infrastructure Provisioning**
 
-ArgoCD GitOps
+Infrastructure is provisioned using Terraform.
 
-Routes:
+Initialize Terraform
+terraform init
+Validate configuration
+terraform validate
+Plan infrastructure
+terraform plan
+Apply infrastructure
+terraform apply
 
-/        → frontend
-/api     → backend
-DevOps Technologies Used
+After deployment configure kubectl.
 
-AWS EKS
+**aws eks update-kubeconfig --region <region> --name <cluster-name>**
 
-Terraform
+🐳 **Application Containerization**
 
-Docker
+**Build Docker image:
+**
+docker build -t ai-app .
 
-GitHub Actions
+Push image to AWS ECR:
 
-ArgoCD
+**aws ecr get-login-password --region <region> \
+| docker login --username AWS --password-stdin <account>.dkr.ecr.<region>.amazonaws.com**
 
-Kubernetes
+**docker push <ecr-repository>**
 
-AWS ECR
 
-AWS ALB
+🔄 **CI/CD Pipeline**
 
-PostgreSQL
+The project uses GitHub Actions to automate builds.
 
-FastAPI
+Pipeline workflow:
 
-React
+Developer pushes code
+       │
+       ▼
+GitHub Actions triggers pipeline
+       │
+       ▼
+Build Docker image
+       │
+       ▼
+Push image to AWS ECR
+       │
+       ▼
+ArgoCD syncs Kubernetes manifests
+       │
+       ▼
+Application deployed to EKS
 
-Future Improvements
+🚀 GitOps Deployment
 
-Planned improvements:
+ArgoCD continuously monitors the GitOps repository.
 
-Prometheus monitoring
+When manifest changes occur:
 
-Grafana dashboards
+**Git commit → ArgoCD detects change → Sync → Deployment updated**
 
-Horizontal Pod Autoscaling
+Install ArgoCD:
 
-AWS Secrets Manager integration
+**kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml**
 
-HTTPS with ACM
+Access UI:
 
-AI model integration
+**kubectl port-forward svc/argocd-server -n argocd 8080:443
+**
 
-Author
+📊 **Monitoring**
+
+Monitoring stack includes:
+Prometheus for metrics collection
+Grafana for dashboards
+
+Metrics monitored:
+
+CPU usage
+Memory usage
+Pod health
+Application metrics
+
+📈 **DevOps Skills Demonstrated**
+
+This project demonstrates real-world DevOps practices:
+
+Infrastructure as Code
+Kubernetes cluster management
+CI/CD automation
+GitOps deployment strategy
+Containerized applications
+Cloud-native monitoring
+Production-style repository separation
+
+👩‍💻 **Author**
 
 Rasika Deshmukh
-DevOps Engineer
+
+DevOps / Cloud Engineer
+
+GitHub
+https://github.com/rasika-08061998
+
+⭐ If you like this project, give it a star!
