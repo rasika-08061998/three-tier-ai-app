@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from .database import SessionLocal
 from . import models, schemas
@@ -9,12 +10,9 @@ app = FastAPI()
 
 
 def get_db():
-
     db = SessionLocal()
-
     try:
         yield db
-
     finally:
         db.close()
 
@@ -39,6 +37,6 @@ def chat(request: schemas.MessageRequest, db: Session = Depends(get_db)):
 
     return {"response": ai_reply}
 
-# Enable Prometheus Metrics
-# -------------------------
+
+# Prometheus metrics
 Instrumentator().instrument(app).expose(app)
