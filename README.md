@@ -314,7 +314,7 @@ Metrics monitored include:
 
 # 📊 Architecture Diagram
 
-![Project Architecture](docs/architecture.png)
+![Project Architecture](docs/Project_Architecture.png)
 
 ---
 
